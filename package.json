@@ -16,5 +16,12 @@
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack",
     "dev": "webpack-dev-server --content-base public"
+  },
+  "dependencies": {
+    "arweave": "^1.4.1",
+    "jdenticon": "^2.2.0",
+    "lodash": "^4.17.15",
+    "svelte-routing": "^1.2.1",
+    "svelte-spa-router": "^1.2.0"
   }
 }

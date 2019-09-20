@@ -1,11 +1,25 @@
 <script>
-	export let name;
+
+	import Home from './routes/Universe.svelte'
+	import Router from 'svelte-spa-router'
+
+	const routes = {
+		'/': Home
+	}
 </script>
 
 <style>
-	h1 {
-		color: purple;
+	:global(body) {
+		margin: 0;
+		padding: 0;
 	}
 </style>
 
-<h1>Hello {name}!</h1>
+<svelte:head>
+	<title>Experse - Decentralized Discussion</title>
+</svelte:head>
+
+<div class="container">
+	<Router {routes}/>
+</div>
+

@@ -1,12 +1,15 @@
-import App from './App.svelte';
+import App from './App.svelte'
+import "jdenticon";
 
 const app = new App({
-	target: document.body,
-	props: {
-		name: 'world'
-	}
-});
+  target: document.body,
+})
 
-window.app = app;
+window.jdenticon_config = {
+	replaceMode: "observe"
+};
 
-export default app;
+
+window.app = app
+
+export default app
