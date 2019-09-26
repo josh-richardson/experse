@@ -1,5 +1,14 @@
 <script>
-  import Home from './routes/Universe.svelte'
+
+  import Universe from './routes/Universe.svelte'
+  import Login from './routes/Login.svelte'
+  import Signup from './routes/Signup.svelte'
+  import Home from './routes/Signup.svelte'
+  import About from './routes/About.svelte'
+  import CreateUniverse from './routes/CreateUniverse.svelte'
+  import Post from './routes/Post.svelte'
+  import Profile from './routes/Profile.svelte'
+
   import Router from 'svelte-spa-router'
   import 'bulma/css/bulma.css'
   let isBurgerVisible = false
@@ -10,6 +19,16 @@
 
   const routes = {
     '/': Home,
+    '/login': Login,
+    '/signup': Signup,
+    '/about': About,
+    '/universe/create/': CreateUniverse,
+    '/universe/:id': Universe,
+    '/post/:id': Post,
+    '/profile': Profile,
+
+
+
   }
 
   function toggleBurger() {
