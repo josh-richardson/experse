@@ -2,11 +2,11 @@ import App from './App.svelte'
 import 'jdenticon'
 
 const app = new App({
-  target: document.body,
+    target: document.body,
 })
 
 window.jdenticon_config = {
-  replaceMode: 'observe',
+    replaceMode: 'observe',
 }
 
 window.app = app
