@@ -32,25 +32,25 @@ export var posts = [
     {
         id: 'ee1e0243-82fe-4302-ba40-9bc47a31a07e',
         title: 'A great post',
-        content:
+        body:
             'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cum eaque nobis omnis qui quis repudiandae sunt vel voluptatem? Culpa distinctio eveniet hic id, iusto maxime quidem quos sapiente soluta ut!',
     },
     {
         id: 'b7b3c18a-5768-4113-acd2-6b14118bf91e',
         title: 'I make the best posts!',
-        content:
+        body:
             'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque eos, maxime. Alias aperiam at consequatur ex exercitationem fuga illo magnam mollitia neque omnis qui, quibusdam quo sequi, vel velit voluptatibus.',
     },
     {
         id: 'ce1b9c4c-e650-4b69-b0de-ecb25d0575f1',
         title: "You'll find that everyone thinks that I make the best posts...",
-        content:
+        body:
             'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci dolor eligendi fugit laborum, minus nesciunt odio, odit omnis placeat praesentium, quod sit unde. Consequatur dolorem eius in quae rem repellendus.',
     },
     {
         id: '0cb86e94-ba36-4893-b17f-a89102aecd78',
         title: 'Ask any of my friends, I make the best posts.',
-        content:
+        body:
             'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consectetur consequatur eligendi fuga magni minima necessitatibus omnis quis sed? Architecto beatae corporis delectus dolorem, iste minima nisi omnis perferendis quos sapiente?',
     },
 ]

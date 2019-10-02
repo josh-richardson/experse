@@ -1,5 +1,5 @@
 import {
-    arweave,
+    arweave, EXPERSE_POST_TAG, EXPERSE_POST_UNIVERSE_TAG,
     EXPERSE_PROFILE_TAG,
     EXPERSE_UNIVERSE_NAME_TAG,
     EXPERSE_UNIVERSE_TAG,
@@ -156,6 +156,26 @@ export class api {
             processResult(queryResult);
         })
     }
+
+    static createPost(post, profile) {
+        return this.sendTransaction(JSON.stringify(post), profile.wallet, {
+            [EXPERSE_POST_TAG]: 'true',
+            [EXPERSE_POST_UNIVERSE_TAG]: post.universeId,
+        })
+    }
+
+    static postsByUniverse(universe, processResult) {
+
+        return api.allOfQuery({
+            op: 'equals',
+            expr1: EXPERSE_POST_UNIVERSE_TAG,
+            expr2: universe,
+        }).then(queryResult => {
+            processResult(queryResult);
+        })
+    }
+
+
 
     static signupUser(profile) {
         return this.sendTransaction(JSON.stringify(_.omit(profile, 'wallet')), profile.wallet, {

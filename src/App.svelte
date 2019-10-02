@@ -6,6 +6,7 @@
     import Home from './routes/Home.svelte'
     import About from './routes/About.svelte'
     import CreateUniverse from './routes/CreateUniverse.svelte'
+    import CreatePost from './routes/CreatePost.svelte'
     import Post from './routes/Post.svelte'
     import Profile from './routes/Profile.svelte'
 
@@ -32,6 +33,7 @@
         '/u/:id': Universe,
         '/universes/': Universes,
         '/p/:id': Post,
+        '/posts/create/:id': CreatePost,
         '/profile': Profile,
     }
 
@@ -41,12 +43,11 @@
 
     onMount(async () => {
         universes.set(dev_variables.universes)
-        posts.set(dev_variables.posts)
+
 
         api.allUniverses((result) => {
           result.forEach(universeTx => {
-              const universeBody = JSON.parse(universeTx.get('data', { decode: true, string: true }))
-
+              const universeBody = {...JSON.parse(universeTx.get('data', { decode: true, string: true })), id: universeTx.id}
               return universes.update(u => [...u, universeBody])
           })
         });

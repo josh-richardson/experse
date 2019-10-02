@@ -5,6 +5,7 @@
     import { universes } from '../stores/universes'
     import { profile } from '../stores/user'
 
+
     let newUniverse = { name: '' }
     let validatedUniversePicture = undefined
 
@@ -59,4 +60,4 @@
     </div>
 </div>
 
-<a class="mt-1 button is-pulled-right is-link is-large" on:click={onCreateClicked}>Sign Up</a>
+<a class="mt-1 button is-pulled-right is-link is-large" on:click={onCreateClicked}>Create Universe</a>
