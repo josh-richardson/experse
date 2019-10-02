@@ -3,6 +3,7 @@
     import { api } from '../api'
     import { push } from 'svelte-spa-router'
     import { universes } from '../stores/universes'
+    import { profile } from '../stores/user'
 
     let newUniverse = { name: '' }
     let validatedUniversePicture = undefined
@@ -20,6 +21,8 @@
 
     const onCreateClicked = () => {
         if (validatedUniversePicture && newUniverse.name.length > 3 && newUniverse.description.length > 10) {
+
+          api.createUniverse({...newUniverse, creator: $profile.username}, $profile).then(console.log)
             universes.update(u => [...u, newUniverse])
             push('/universes')
         }

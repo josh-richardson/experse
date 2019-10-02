@@ -21,6 +21,7 @@
     import { universes } from './stores/universes'
     import * as dev_variables from './dev_variables'
     import { posts } from './stores/posts'
+    import { api } from './api'
 
     const routes = {
         '/': Home,
@@ -41,6 +42,14 @@
     onMount(async () => {
         universes.set(dev_variables.universes)
         posts.set(dev_variables.posts)
+
+        api.allUniverses((result) => {
+          result.forEach(universeTx => {
+              const universeBody = JSON.parse(universeTx.get('data', { decode: true, string: true }))
+
+              return universes.update(u => [...u, universeBody])
+          })
+        });
     })
 </script>
 
