@@ -23,7 +23,6 @@
                     api.retrieveUserProfile(address, result => {
                         const userDetails = JSON.parse(result.get('data', { decode: true, string: true }))
                         profile.set({ ...userDetails, wallet: wallet })
-                        console.log($profile)
                         push('/')
                     })
                 })

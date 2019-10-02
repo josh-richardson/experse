@@ -4,10 +4,10 @@
     import { profile } from '../stores/user'
     import { api } from '../api'
     import { push } from 'svelte-spa-router'
+    import { toastMessage } from '../utils'
 
     let newUserProfile = { username: '' }
     let validatedFile = undefined
-    let validatedProfilePicture = undefined
 
     const walletDroppedFile = e => {
         api.readFile(e).then(result => {
@@ -23,24 +23,14 @@
         })
     }
 
-    const imageDroppedFile = e => {
-        api.readFile(e).then(result => {
-            if (result.startsWith('data:image/jpeg;base64') && result.length < 1000000) {
-                validatedProfilePicture = true
-                newUserProfile = { ...newUserProfile, profilePicture: result }
-            } else {
-                validatedProfilePicture = false
-            }
-        })
-    }
-
     const onSignupClicked = () => {
-        if (validatedProfilePicture && validatedFile && newUserProfile.username.length > 3) {
+        if (validatedFile && newUserProfile.username.length > 3) {
             profile.set(newUserProfile)
             api.signupUser(newUserProfile).then(tx => {
                 push('/')
             })
         } else {
+            toastMessage('Please type a username and select a keyfile!', 'is-danger')
         }
     }
 </script>
@@ -50,27 +40,11 @@
 
 <div class="field mt-2">
     <label class="label">Username</label>
-    <div class="control has-icons-left has-icons-right">
+    <div class="control has-icons-left">
         <input class="input is-link" type="text" placeholder="Username" bind:value={newUserProfile.username} />
         <span class="icon is-small is-left">
             <i class="fas fa-user" />
         </span>
-        <span class="icon is-small is-right">
-            <i class="fas fa-check" />
-        </span>
-    </div>
-    <p class="help is-link">This username is available</p>
-</div>
-
-<div class="field mt-2">
-    <label class="label">Please select a profile photo (.jpg), under 500kb</label>
-    <div class="drop-wrapper">
-        <FileDrop
-            on:droppedFile={imageDroppedFile}
-            success={validatedProfilePicture}
-            initialText="Please an image here, or click to select!"
-            successText="Got it!"
-            failureText="That doesn't look like a JPEG image" />
     </div>
 </div>
 

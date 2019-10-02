@@ -23,6 +23,7 @@
     import * as dev_variables from './dev_variables'
     import { posts } from './stores/posts'
     import { api } from './api'
+    import { arweave } from './constants'
 
     const routes = {
         '/': Home,
@@ -44,13 +45,18 @@
     onMount(async () => {
         universes.set(dev_variables.universes)
 
+        api.allUniverses(result => {
+            result.forEach(async universeTx => {
+                const universeBody = {
+                    ...JSON.parse(universeTx.get('data', { decode: true, string: true })),
+                    id: universeTx.id,
+                    owner: await arweave.wallets.ownerToAddress(universeTx.owner)
+                }
+                return universes.update(u => [...u, universeBody])
+            })
+        })
 
-        api.allUniverses((result) => {
-          result.forEach(universeTx => {
-              const universeBody = {...JSON.parse(universeTx.get('data', { decode: true, string: true })), id: universeTx.id}
-              return universes.update(u => [...u, universeBody])
-          })
-        });
+
     })
 </script>
 

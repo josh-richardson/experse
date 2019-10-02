@@ -1,5 +1,5 @@
 import {
-    arweave, EXPERSE_POST_TAG, EXPERSE_POST_UNIVERSE_TAG,
+    arweave, EXPERSE_COMMENT_POST_TAG, EXPERSE_COMMENT_TAG, EXPERSE_POST_TAG, EXPERSE_POST_UNIVERSE_TAG,
     EXPERSE_PROFILE_TAG,
     EXPERSE_UNIVERSE_NAME_TAG,
     EXPERSE_UNIVERSE_TAG,
@@ -141,7 +141,7 @@ export class api {
     }
 
     static createUniverse(universe, profile) {
-        return this.sendTransaction(JSON.stringify(universe), profile.wallet, {
+        return this.sendTransaction(JSON.stringify({...universe, date: new Date()}), profile.wallet, {
             [EXPERSE_UNIVERSE_TAG]: 'true',
             [EXPERSE_UNIVERSE_NAME_TAG]: universe.name,
         })
@@ -158,14 +158,32 @@ export class api {
     }
 
     static createPost(post, profile) {
-        return this.sendTransaction(JSON.stringify(post), profile.wallet, {
+        return this.sendTransaction(JSON.stringify({...post, date: new Date()}), profile.wallet, {
             [EXPERSE_POST_TAG]: 'true',
             [EXPERSE_POST_UNIVERSE_TAG]: post.universeId,
         })
     }
 
-    static postsByUniverse(universe, processResult) {
+    static createComment(comment, profile) {
+        return this.sendTransaction(JSON.stringify({...comment, date: new Date()}), profile.wallet, {
+            [EXPERSE_COMMENT_TAG]: 'true',
+            [EXPERSE_COMMENT_POST_TAG]: comment.postId,
+        })
+    }
 
+
+    static commentsByPost(postId, processResult) {
+        return api.allOfQuery({
+            op: 'equals',
+            expr1: EXPERSE_COMMENT_POST_TAG,
+            expr2: postId,
+        }).then(queryResult => {
+            processResult(queryResult);
+        })
+    }
+
+
+    static postsByUniverse(universe, processResult) {
         return api.allOfQuery({
             op: 'equals',
             expr1: EXPERSE_POST_UNIVERSE_TAG,
@@ -174,8 +192,6 @@ export class api {
             processResult(queryResult);
         })
     }
-
-
 
     static signupUser(profile) {
         return this.sendTransaction(JSON.stringify(_.omit(profile, 'wallet')), profile.wallet, {

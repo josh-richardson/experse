@@ -1,3 +1,6 @@
+import { toast } from "bulma-toast";
+
+
 export const uuidv4 = () => {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
         // eslint-disable-next-line no-mixed-operators
@@ -10,4 +13,15 @@ export const uuidv4 = () => {
 export const capitalize = s => {
     if (typeof s !== 'string') return ''
     return s.charAt(0).toUpperCase() + s.slice(1)
+}
+
+export const toastMessage = (message, clazz) => {
+    toast({
+        message: message,
+        type: clazz,
+        dismissible: true,
+        pauseOnHover: true,
+        duration: 10000,
+        animate: { in: 'fadeIn', out: 'fadeOut' }
+    });
 }

@@ -5,7 +5,9 @@
     import { link } from 'svelte-spa-router'
     import { onMount } from 'svelte'
     import { api } from '../api'
-
+    import { devPosts } from '../dev_variables'
+    import { arweave } from '../constants'
+    import { profile } from '../stores/user'
     export let params = {}
 
     posts.set([])
@@ -14,20 +16,18 @@
 
     $: {
         universe = $universes.filter(c => c.id === params.id)[0]
-        if (universe) {
-            api.postsByUniverse(universe.id, (results) => {
 
-                results.forEach(p => {
+        if (universe) {
+          posts.set(devPosts)
+            api.postsByUniverse(universe.id, results => {
+                results.forEach(async p => {
                     const postDetails = JSON.parse(p.get('data', { decode: true, string: true }))
-                    console.log(postDetails)
-                  posts.update(current => [...current, {...postDetails, id: p.id}])
+                    const owner = await arweave.wallets.ownerToAddress(p.owner);
+                    posts.update(current => [...current, { ...postDetails, id: p.id, owner: owner }])
                 })
-            });
+            })
         }
     }
-
-
-
 </script>
 
 {#if universe}
@@ -40,16 +40,14 @@
         </div>
         <div class="level-right">
             <div class="level-item">
-                <a use:link href="/posts/create/{universe.id}" class="button is-link">
+                <a use:link href="/posts/create/{universe.id}" class="button is-link" disabled={$profile.wallet ? undefined: "true"}>
                     <strong>Create a Post</strong>
                 </a>
             </div>
         </div>
     </div>
 
-    <p class="mb-2">{universe.description}</p>
-
-
+    <p class="mb-2">About this Universe: {universe.description}</p>
 
     {#each $posts as post}
         <PostListItem {post} />

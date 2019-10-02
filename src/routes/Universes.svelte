@@ -2,6 +2,7 @@
     import { universes } from '../stores/universes'
     import Universe from '../components/universes/UniverseListItem.svelte'
     import { link } from 'svelte-spa-router'
+    import { profile } from '../stores/user'
 </script>
 
 <div class="container level mb-2">
@@ -12,7 +13,7 @@
     </div>
     <div class="level-right">
         <div class="level-item">
-            <a use:link href="/universes/create" class="button is-link">
+            <a use:link href="/universes/create" class="button is-link" disabled={$profile.wallet ? undefined: "true"}>
                 <strong>Create a Universe</strong>
             </a>
         </div>
