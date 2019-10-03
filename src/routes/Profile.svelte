@@ -1,5 +1,6 @@
 <script>
     import UniverseListing from '../components/universes/UniverseListing.svelte'
+    import PostListing from '../components/posts/PostListing.svelte'
 
     export let params
 
@@ -13,3 +14,4 @@
 <p class="is-size-5 mb-1">Universes created:</p>
 <UniverseListing filter={filterFunction} />
 <p class="is-size-5 mb-1">Posts created:</p>
+<PostListing userId={params.id} } />

@@ -229,6 +229,27 @@ export class api {
             })
     }
 
+    static postsByUser(owner, processResult) {
+        return api
+          .allOfQuery({
+              op: 'and',
+              expr1: {
+                  op: 'equals',
+                  expr1: EXPERSE_POST_TAG,
+                  expr2: 'true',
+              },
+              expr2: {
+                  op: 'equals',
+                  expr1: 'from',
+                  expr2: owner,
+              },
+          })
+          .then(queryResult => {
+              processResult(queryResult)
+          })
+    }
+
+
     static allPosts(processResult) {
         return api
             .allOfQuery({

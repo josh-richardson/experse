@@ -8,27 +8,19 @@
     import { devPosts } from '../dev_variables'
     import { arweave } from '../constants'
     import { profile } from '../stores/user'
+
+    import PostListing from '../components/posts/PostListing.svelte'
+
     export let params = {}
 
     posts.set([])
 
     let universe = undefined
-    import * as _ from 'lodash'
+
+    console.log("mounted")
 
     $: {
         universe = $universes.filter(c => c.id === params.id)[0]
-
-        if (universe) {
-            api.postsByUniverse(universe.id, results => {
-                results.forEach(async p => {
-                    const postDetails = JSON.parse(p.get('data', { decode: true, string: true }))
-                    const owner = await arweave.wallets.ownerToAddress(p.owner)
-                    posts.update(current =>
-                        _.orderBy([...current, { ...postDetails, id: p.id, owner: owner }], ['date'])
-                    )
-                })
-            })
-        }
     }
 </script>
 
@@ -55,7 +47,8 @@
 
     <p class="mb-2">About this Universe: {universe.description}</p>
 
-    {#each $posts as post}
-        <PostListItem {post} />
-    {/each}
+    <PostListing universeId={universe.id} />
+<!--    {#each $posts as post}-->
+<!--        <PostListItem {post} />-->
+<!--    {/each}-->
 {/if}
