@@ -6,6 +6,8 @@ A decentralized forum & aggregator, written by @josh-richardson and @DevdudeSami
 
 The app is in a good state, but due to the fact that it was written in ~24 hours, the code quality is what you'd expect for a hackathon.
 
+Deployed at: https://arweave.net/BMe8rJRZ9XTrIEvccAuWGtMbgThWPZgbPERC3iUNOHE#/
+
 #### Changelog:
  
 V0.1:
@@ -19,3 +21,6 @@ V0.1:
 
 
 Future work will likely involve a re-write to allow better usability, maintainability and reliability, as well as better performance, and greater use of asynchronous functions. There will also be caching, and sub-universes which will allow sub-forum like functionality.
+
+#### To run locally:
+Clone, then: `npm install && npm run dev`
