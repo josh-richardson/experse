@@ -5,8 +5,33 @@
     import { api } from '../../api'
     import { toastMessage } from '../../utils'
 
+    import { onMount } from 'svelte'
 
     export let comment
+
+    let updates = [];
+
+    const checkForPostUpdates = (id) => {
+        api.updatesById(id, (results) => {
+            results.forEach(r => {
+                const updateDetails = JSON.parse(r.get('data', { decode: true, string: true }))
+                updates = _.orderBy([...updates, updateDetails], ['date']);
+                console.log(updates);
+
+                comment.oldBody = comment.body;
+                comment.body = updates[0].body;
+            })
+        })
+    }
+
+    onMount(() => {
+      setTimeout(() => {
+          checkForPostUpdates(comment.id);
+      }, 1000)
+
+
+    })
+
 
     var editObject = {body: comment.body}
     let editing = false

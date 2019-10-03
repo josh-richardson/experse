@@ -21,11 +21,9 @@
           results.forEach(r => {
               const updateDetails = JSON.parse(r.get('data', { decode: true, string: true }))
               updates = _.orderBy([...updates, updateDetails], ['date']);
-
               post.oldBody = post.body;
               post.body = updates[0].body;
               postHtml = converter.makeHtml(post.body)
-
           })
         })
     }
@@ -72,6 +70,7 @@
     }
 
     let editing = false
+    let historyMode = false
 
     const onCompleteEditClicked = () => {
       editObject.updatedContent = post.id;
@@ -180,8 +179,9 @@
                     {/if}
 
                 </div>
-                {#if $profile.wallet && $profile.address === post.owner}
+
                     <div class="media-right">
+                {#if $profile.wallet && $profile.address === post.owner}
                         <a
                             class="button tooltip"
                             data-tooltip="Toggle post editing"
@@ -192,8 +192,21 @@
                                 <i class="fas fa-edit" />
                             </span>
                         </a>
-                    </div>
                 {/if}
+                        {#if updates.length !== 0}
+                                <a
+                                    class="button tooltip"
+                                    data-tooltip="View update history"
+                                    on:click={() => {
+                        historyMode = !historyMode
+                                        }}>
+                            <span class="icon is-small">
+                                <i class="fas fa-history" />
+                            </span>
+                            </a>
+                        {/if}
+                    </div>
+
             </div>
         </div>
     </div>
