@@ -7,7 +7,8 @@ import {
     EXPERSE_PROFILE_TAG,
     EXPERSE_UNIVERSE_NAME_TAG,
     EXPERSE_UNIVERSE_TAG, EXPERSE_UPDATE_ID_TAG, EXPERSE_UPDATE_TAG,
-    EXPERSE_USERNAME_TAG
+    EXPERSE_USERNAME_TAG,
+    EXPERSE_SCORE_TAG, EXPERSE_SCORE_POST_TAG
 } from './constants'
 import * as _ from 'lodash'
 
@@ -181,6 +182,13 @@ export class api {
         })
     }
 
+    static createScore(score, profile) {
+        return this.sendTransaction(JSON.stringify({ ...score, date: new Date() }), profile.wallet, {
+            [EXPERSE_SCORE_TAG]: 'true',
+            [EXPERSE_SCORE_POST_TAG]: score.postId,
+        })
+    }
+
     static commentsByPost(postId, processResult) {
         return api
             .allOfQuery({
@@ -199,6 +207,18 @@ export class api {
                 op: 'equals',
                 expr1: EXPERSE_POST_UNIVERSE_TAG,
                 expr2: universe,
+            })
+            .then(queryResult => {
+                processResult(queryResult)
+            })
+    }
+
+    static allPosts(processResult) {
+        return api
+            .allOfQuery({
+                op: 'equals',
+                expr1: EXPERSE_POST_TAG,
+                expr2: 'true',
             })
             .then(queryResult => {
                 processResult(queryResult)

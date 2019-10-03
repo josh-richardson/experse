@@ -18,7 +18,7 @@
                 { ...newPost, creator: $profile.username, universeId: universe.id, universeName: universe.name },
                 $profile
             ).then(console.log)
-            push('/universes')
+            push('/')
         }
     }
 </script>

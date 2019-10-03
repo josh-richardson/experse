@@ -82,6 +82,22 @@
         }
       })
     }
+
+    const onScoreUpClicked = () => {
+        api.createScore({type: 'up', postID: post.id}, $profile).then(result => {
+            if (result.id) {
+                toastMessage('Success! Your scoring will be visible after being mined.', 'is-success')
+            }
+        })
+    }
+
+    const onScoreDownClicked = () => {
+        api.createScore({type: 'down', postID: post.id}, $profile).then(result => {
+            if (result.id) {
+                toastMessage('Success! Your scoring will be visible after being mined.', 'is-success')
+            }
+        })
+    }
 </script>
 
 <style>
@@ -135,13 +151,13 @@
                 <div class="media-left">
                     <div class="columns upvote-container">
                         <div class="column column-upvotes">
-                            <a class="button is-small is-white tooltip is-tooltip-left" data-tooltip="Upvote (0.1 AR)">
+                            <a class="button is-small is-white tooltip is-tooltip-left" data-tooltip="Upvote (0.1 AR)" on:click={onScoreUpClicked}>
                                 <span class="icon is-small">
                                     <i class="fas fa-angle-up" />
                                 </span>
                             </a>
                             <p>0</p>
-                            <a class="button is-small is-white tooltip is-tooltip-left" data-tooltip="Downvote (0.1 AR)">
+                            <a class="button is-small is-white tooltip is-tooltip-left" data-tooltip="Downvote (0.1 AR)" on:click={onScoreDownClicked}>
                                 <span class="icon is-small">
                                     <i class="fas fa-angle-down" />
                                 </span>
