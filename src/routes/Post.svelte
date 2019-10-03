@@ -30,8 +30,7 @@
         })
 
         api.scoresByPost(post.id, result => {
-            console.log(result)
-            results.forEach(r => {
+            result.forEach(r => {
                 const scoreDetails = JSON.parse(r.get('data', { decode: true, string: true }))
                 console.log(scoreDetails)
                 score += scoreDetails.type == 'up' ? 1 : -1
@@ -95,7 +94,7 @@
 
 
     const onScoreUpClicked = () => {
-        api.createScore({ type: 'up', postID: post.id }, $profile).then(result => {
+        api.createScore({ type: 'up', postId: post.id }, $profile).then(result => {
             if (result.id) {
                 toastMessage('Success! Your scoring will be visible after being mined.', 'is-success')
             }
@@ -103,7 +102,7 @@
     }
 
     const onScoreDownClicked = () => {
-        api.createScore({ type: 'down', postID: post.id }, $profile).then(result => {
+        api.createScore({ type: 'down', postId: post.id }, $profile).then(result => {
             if (result.id) {
                 toastMessage('Success! Your scoring will be visible after being mined.', 'is-success')
             }
