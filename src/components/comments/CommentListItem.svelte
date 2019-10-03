@@ -7,6 +7,7 @@
 
     import { onMount } from 'svelte'
 
+    let historyMode = false
     export let comment
 
     let updates = []
@@ -16,9 +17,7 @@
             results.forEach(r => {
                 const updateDetails = JSON.parse(r.get('data', { decode: true, string: true }))
                 updates = _.orderBy([...updates, updateDetails], ['date'])
-                console.log(updates)
-
-                comment.oldBody = comment.body
+                if (!comment.oldBody) comment.oldBody = comment.body
                 comment.body = updates[0].body
             })
         })
@@ -54,19 +53,19 @@
                     <div class="column column-upvotes">
                         <a class="button is-small is-white tooltip is-tooltip-left" data-tooltip="Upvote (0.1 AR)">
                             <span class="icon is-small">
-                                <i class="fas fa-angle-up" />
+                                <i class="fas fa-angle-up"/>
                             </span>
                         </a>
                         <p>0</p>
                         <a class="button is-small is-white tooltip is-tooltip-left" data-tooltip="Downvote (0.1 AR)">
                             <span class="icon is-small">
-                                <i class="fas fa-angle-down" />
+                                <i class="fas fa-angle-down"/>
                             </span>
                         </a>
                     </div>
                     <div class="column">
                         <figure class="image is-48x48">
-                            <svg class="user-icon" width="48" height="48" data-jdenticon-value={comment.owner} />
+                            <svg class="user-icon" width="48" height="48" data-jdenticon-value={comment.owner}/>
                         </figure>
                     </div>
                 </div>
@@ -82,28 +81,57 @@
                 </p>
 
                 {#if editing}
-                    <textarea bind:value={editObject.body} class="textarea is-link" placeholder="Text to edit!" />
+                    <textarea bind:value={editObject.body} class="textarea is-link" placeholder="Text to edit!"/>
                     <a class="mt-1 button is-pulled-right is-link" on:click={onCompleteEditClicked}>Complete edit</a>
+                {:else if historyMode}
+                    {#each updates as update}
+                        <div class="card">
+                            <p class="item-info">Update ({timeago.ago(update.date)}):</p>
+                            <p>{update.body}</p>
+
+                        </div>
+                    {/each}
+                    <div class="card">
+                        <p class="item-info">Original content ({timeago.ago(comment.date)}):</p>
+                        <p class="mb-1">
+                            {comment.oldBody}
+                        </p>
+                    </div>
                 {:else}
                     <div class="post-content">
                         <p>{comment.body}</p>
                     </div>
                 {/if}
             </div>
-            {#if $profile.wallet && $profile.address === comment.owner}
-                <div class="media-right">
+
+            <div class="media-right">
+                {#if $profile.wallet && $profile.address === comment.owner}
                     <a
-                        class="button tooltip"
-                        data-tooltip="Toggle post editing"
-                        on:click={() => {
-                            editing = !editing
-                        }}>
-                        <span class="icon is-small">
-                            <i class="fas fa-edit" />
+                            class="button tooltip"
+                            data-tooltip="Toggle post editing"
+                            on:click={() => {
+                editing = !editing
+                }}>
+                    <span class="icon is-small">
+                            <i class="fas fa-edit"/>
                         </span>
                     </a>
-                </div>
-            {/if}
+                {/if}
+                {#if updates.length !== 0}
+                    <a
+                            class="button tooltip"
+                            data-tooltip="View update history"
+                            on:click={() => {
+                historyMode = !historyMode
+                }}>
+                    <span class="icon is-small">
+                                <i class="fas fa-history"/>
+                            </span>
+                    </a>
+                {/if}
+            </div>
+
+
         </div>
     </div>
 </div>

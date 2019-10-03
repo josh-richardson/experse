@@ -21,9 +21,10 @@
             results.forEach(r => {
                 const updateDetails = JSON.parse(r.get('data', { decode: true, string: true }))
                 updates = _.orderBy([...updates, updateDetails], ['date'])
-                post.oldBody = post.body
-                post.body = updates[0].body
+                if (!post.oldBody) post.oldBody = post.body
+                post.body = updates[updates.length - 1].body
                 postHtml = converter.makeHtml(post.body)
+                console.log(updates);
             })
         })
     }
@@ -192,6 +193,20 @@
                         <a class="mt-1 button is-pulled-right is-link" on:click={onCompleteEditClicked}>
                             Complete edit
                         </a>
+                    {:else if historyMode}
+                        {#each updates as update}
+                            <div class="card">
+                                <p class="item-info">Update ({timeago.ago(update.date)}):</p>
+                                {@html converter.makeHtml(update.body)}
+
+                            </div>
+                        {/each}
+                        <div class="card">
+                            <p class="item-info">Original content ({timeago.ago(post.date)}):</p>
+                            <p class="mb-1">
+                                {@html converter.makeHtml(post.oldBody)}
+                            </p>
+                        </div>
                     {:else}
                         <div class="post-content">
                             <p class="mb-1">
