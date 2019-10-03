@@ -26,11 +26,15 @@
             <div class="media-content">
                 <a href="/u/{universe.id}" use:link>
                     <p class="title is-4">{universe.name}</p>
-                    <p class="subtitle is-6">Created by {universe.creator} <span class="address-item">({universe.owner})</span></p>
                 </a>
+                <p class="subtitle is-6">
+                    Created by
+                    <a href="/profile/{universe.owner}" use:link>{universe.creator}</a>
+                    <span class="address-item">({universe.owner})</span>
+                </p>
+
             </div>
         </div>
-
 
         <div class="content">{universe.description}</div>
     </div>

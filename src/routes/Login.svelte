@@ -4,6 +4,7 @@
     import { arweave } from '../constants'
     import { api } from '../api'
     import { profile } from '../stores/user'
+    import { toastMessage } from '../utils'
 
     let validatedAccount = undefined
     let validatedFile = undefined
@@ -21,6 +22,12 @@
                     validatedFile = true
 
                     api.retrieveUserProfile(address, result => {
+                        console.log(result)
+                        if (result === false) {
+                            toastMessage('Please make sure to sign up before trying to log in!', 'is-danger')
+                            return
+                        }
+
                         const userDetails = JSON.parse(result.get('data', { decode: true, string: true }))
                         profile.set({ ...userDetails, wallet: wallet })
                         push('/')
@@ -49,7 +56,7 @@
 <p class="is-size-3 mb-1">Experse Login</p>
 <p class="mb-1">
     Drop your Arweave keyfile on the area below in order to log in. If you haven't logged in before, you'll need to sign
-    up and set a username and profile image.
+    up and set a username. It only takes five seconds!
 </p>
 
 <div class="drop-wrapper">

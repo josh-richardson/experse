@@ -1,9 +1,13 @@
 import {
-    arweave, EXPERSE_COMMENT_POST_TAG, EXPERSE_COMMENT_TAG, EXPERSE_POST_TAG, EXPERSE_POST_UNIVERSE_TAG,
+    arweave,
+    EXPERSE_COMMENT_POST_TAG,
+    EXPERSE_COMMENT_TAG,
+    EXPERSE_POST_TAG,
+    EXPERSE_POST_UNIVERSE_TAG,
     EXPERSE_PROFILE_TAG,
     EXPERSE_UNIVERSE_NAME_TAG,
     EXPERSE_UNIVERSE_TAG,
-    EXPERSE_USERNAME_TAG
+    EXPERSE_USERNAME_TAG,
 } from './constants'
 import * as _ from 'lodash'
 
@@ -86,9 +90,13 @@ export class api {
                 expr1: 'from',
                 expr2: profileAddr,
             },
-        }).then(queryResult => {
-            processResult(queryResult)
         })
+            .then(queryResult => {
+                processResult(queryResult)
+            })
+            .catch(() => {
+                processResult(false)
+            })
     }
 
     static profileByName(name, processResult) {
@@ -141,56 +149,60 @@ export class api {
     }
 
     static createUniverse(universe, profile) {
-        return this.sendTransaction(JSON.stringify({...universe, date: new Date()}), profile.wallet, {
+        return this.sendTransaction(JSON.stringify({ ...universe, date: new Date() }), profile.wallet, {
             [EXPERSE_UNIVERSE_TAG]: 'true',
             [EXPERSE_UNIVERSE_NAME_TAG]: universe.name,
         })
     }
 
     static allUniverses(processResult) {
-        return api.allOfQuery({
-            op: 'equals',
-            expr1: EXPERSE_UNIVERSE_TAG,
-            expr2: 'true',
-        }).then(queryResult => {
-            processResult(queryResult);
-        })
+        return api
+            .allOfQuery({
+                op: 'equals',
+                expr1: EXPERSE_UNIVERSE_TAG,
+                expr2: 'true',
+            })
+            .then(queryResult => {
+                processResult(queryResult)
+            })
     }
 
     static createPost(post, profile) {
-        return this.sendTransaction(JSON.stringify({...post, date: new Date()}), profile.wallet, {
+        return this.sendTransaction(JSON.stringify({ ...post, date: new Date() }), profile.wallet, {
             [EXPERSE_POST_TAG]: 'true',
             [EXPERSE_POST_UNIVERSE_TAG]: post.universeId,
         })
     }
 
     static createComment(comment, profile) {
-        return this.sendTransaction(JSON.stringify({...comment, date: new Date()}), profile.wallet, {
+        return this.sendTransaction(JSON.stringify({ ...comment, date: new Date() }), profile.wallet, {
             [EXPERSE_COMMENT_TAG]: 'true',
             [EXPERSE_COMMENT_POST_TAG]: comment.postId,
         })
     }
 
-
     static commentsByPost(postId, processResult) {
-        return api.allOfQuery({
-            op: 'equals',
-            expr1: EXPERSE_COMMENT_POST_TAG,
-            expr2: postId,
-        }).then(queryResult => {
-            processResult(queryResult);
-        })
+        return api
+            .allOfQuery({
+                op: 'equals',
+                expr1: EXPERSE_COMMENT_POST_TAG,
+                expr2: postId,
+            })
+            .then(queryResult => {
+                processResult(queryResult)
+            })
     }
 
-
     static postsByUniverse(universe, processResult) {
-        return api.allOfQuery({
-            op: 'equals',
-            expr1: EXPERSE_POST_UNIVERSE_TAG,
-            expr2: universe,
-        }).then(queryResult => {
-            processResult(queryResult);
-        })
+        return api
+            .allOfQuery({
+                op: 'equals',
+                expr1: EXPERSE_POST_UNIVERSE_TAG,
+                expr2: universe,
+            })
+            .then(queryResult => {
+                processResult(queryResult)
+            })
     }
 
     static signupUser(profile) {

@@ -7,8 +7,11 @@
     import { profile } from '../stores/user'
     import CommentListing from '../components/comments/CommentListing.svelte'
     import { toastMessage } from '../utils'
+    import { link } from 'svelte-spa-router'
+
 
     export let params = {}
+    var editObject = {}
 
     var converter = new showdown.Converter()
     var post, postHtml
@@ -16,6 +19,7 @@
         post = $posts.filter(c => c.id === params.id)[0]
         if (post) {
             postHtml = converter.makeHtml(post.body)
+            editObject.body = post.body;
         }
     }
     if ($posts.length === 0) {
@@ -26,26 +30,28 @@
         })
     }
 
-    let buttonDisabled = false;
+    let buttonDisabled = false
 
     var newReply = {}
 
-
     const onCreateReplyClicked = () => {
-
-        buttonDisabled = true;
-        api.createComment({...newReply, creator: $profile.username, postId: post.id}, $profile).then(result => {
-
-            if (result.id) {
-                buttonDisabled = false;
-                newReply.body = ''
-                toastMessage('Success! Your comment will be visible after being mined.', 'is-success')
-            }
-        }).catch(() => {
-            toastMessage('Failure! An error occured.', 'is-danger')
-            return buttonDisabled = false
-        })
+        buttonDisabled = true
+        api.createComment({ ...newReply, creator: $profile.username, postId: post.id }, $profile)
+            .then(result => {
+                if (result.id) {
+                    buttonDisabled = false
+                    newReply.body = ''
+                    toastMessage('Success! Your comment will be visible after being mined.', 'is-success')
+                }
+            })
+            .catch(() => {
+                toastMessage('Failure! An error occured.', 'is-danger')
+                return (buttonDisabled = false)
+            })
     }
+
+    let editing = false
+
 </script>
 
 <style>
@@ -69,8 +75,6 @@
     hr.in-post {
         margin-top: 0.4em;
     }
-
-
 </style>
 
 <!--details of a post and associated replies-->
@@ -85,38 +89,63 @@
                 </div>
 
                 <div class="media-content">
-                    <p class="item-info">Created by <span class="darker">{post.creator}</span> ({post.owner}), <span class="darker">{timeago.ago(post.date)}</span></p>
-                    <p class="is-size-4 post-title">{post.title}</p>
-                    <hr class="in-post"/>
-                    <div class="post-content">
-                        <p class="mb-1">
-                            {@html postHtml}
-                        </p>
-                    </div>
-                </div>
-                {#if $profile.wallet && $profile.address === post.owner}
-                <div class="media-right">
-                    <a class="button">
-                        <span class="icon is-small">
-                          <i class="fas fa-edit"></i>
+
+                    <p class="item-info">
+                        Created by
+                        <span class="darker">
+                            <a href="/profile/{post.owner}" use:link>{post.creator}</a>
                         </span>
-                    </a>
+                        ({post.owner}),
+                        <span class="darker">{timeago.ago(post.date)}</span>
+                    </p>
+                    <p class="is-size-4 post-title">{post.title}</p>
+                    <hr class="in-post" />
+
+                    {#if editing}
+                        <textarea bind:value={editObject.body} class="textarea is-link" placeholder="Text to edit!" />
+                        <a class="mt-1 button is-pulled-right is-link tooltip" on:click={onCreateReplyClicked} data-tooltip="Tooltip Text">Complete edit</a>
+                    {:else}
+                        <div class="post-content">
+                            <p class="mb-1">
+                                {@html postHtml}
+                            </p>
+                        </div>
+                    {/if}
+
                 </div>
+                {#if true}
+                    <div class="media-right">
+                        <a
+                            class="button tooltip"
+                            data-tooltip="Toggle post editing"
+                            on:click={() => {
+                                editing = !editing
+                            }}>
+                            <span class="icon is-small">
+                                <i class="fas fa-edit" />
+                            </span>
+                        </a>
+                    </div>
                 {/if}
             </div>
         </div>
     </div>
 
     <div class="column is-11 is-pulled-right">
-            <CommentListing postId={params.id} />
+        <CommentListing postId={params.id} />
 
-
-
-
-            <hr />
-            <p class="is-size-4 mb-1">Post a reply:</p>
-            <textarea bind:value={newReply.body} class="textarea is-link" placeholder={$profile.wallet ? "Your reply. Remember to be nice!" : "You need to log in first!"} disabled={!$profile.wallet}></textarea>
-            <a class="mt-1 button is-pulled-right is-link" on:click={onCreateReplyClicked} disabled={($profile.wallet || buttonDisabled) ? undefined: "true"}>Reply</a>
+        <hr />
+        <p class="is-size-4 mb-1">Post a reply:</p>
+        <textarea
+            bind:value={newReply.body}
+            class="textarea is-link"
+            placeholder={$profile.wallet ? 'Your reply. Remember to be nice!' : 'You need to log in first!'}
+            disabled={!$profile.wallet} />
+        <a
+            class="mt-1 button is-pulled-right is-link"
+            on:click={onCreateReplyClicked}
+            disabled={$profile.wallet || buttonDisabled ? undefined : 'true'}>
+            Reply
+        </a>
     </div>
-
 {/if}

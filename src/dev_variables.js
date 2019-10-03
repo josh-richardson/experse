@@ -34,8 +34,7 @@ export var devPosts = [
         creator: 'famwam2212',
         title: 'Look at this cute doggo!',
         owner: '0xDEADBEAR',
-        body:
-            '![Dog](https://www.medicalnewstoday.com/content/images/articles/322/322868/golden-retriever-puppy.jpg)',
+        body: '![Dog](https://www.medicalnewstoday.com/content/images/articles/322/322868/golden-retriever-puppy.jpg)',
         date: new Date(),
     },
     {
@@ -46,8 +45,7 @@ export var devPosts = [
         creator: 'Joshua',
         owner: '0xDEADBEEF',
         date: new Date(),
-
-    }
+    },
 ]
 
 export var comments = []

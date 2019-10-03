@@ -9,6 +9,7 @@
     import CreatePost from './routes/CreatePost.svelte'
     import Post from './routes/Post.svelte'
     import Profile from './routes/Profile.svelte'
+    import Search from './routes/Search.svelte'
 
     import Router from 'svelte-spa-router'
     import 'bulma/css/bulma.css'
@@ -26,16 +27,16 @@
     import { arweave } from './constants'
 
     const routes = {
-        '/': Home,
+        '/': Universes,
         '/login': Login,
         '/signup': Signup,
         '/about': About,
         '/universes/create/': CreateUniverse,
         '/u/:id': Universe,
-        '/universes/': Universes,
         '/p/:id': Post,
         '/posts/create/:id': CreatePost,
-        '/profile': Profile,
+        '/profile/:id': Profile,
+        '/search': Search
     }
 
     function toggleBurger() {
@@ -50,13 +51,11 @@
                 const universeBody = {
                     ...JSON.parse(universeTx.get('data', { decode: true, string: true })),
                     id: universeTx.id,
-                    owner: await arweave.wallets.ownerToAddress(universeTx.owner)
+                    owner: await arweave.wallets.ownerToAddress(universeTx.owner),
                 }
                 return universes.update(u => [...u, universeBody])
             })
         })
-
-
     })
 </script>
 
@@ -140,8 +139,8 @@
 
     <div id="navbarBasicExample" class="navbar-menu {isBurgerVisible ? 'is-active' : ''}">
         <div class="navbar-start">
-            <a href="/" use:link class="navbar-item">Home</a>
-            <a href="/universes" use:link class="navbar-item">Universes</a>
+            <a href="/" use:link class="navbar-item">Universes</a>
+            <a href="/search" use:link class="navbar-item">Search</a>
             <a href="/about" use:link class="navbar-item">About</a>
         </div>
 
@@ -149,7 +148,7 @@
             <div class="navbar-item">
                 <div class="buttons">
                     {#if $profile.wallet}
-                        <a use:link class="button is-light" href="/profile">My Profile</a>
+                        <a use:link class="button is-light" href="/profile/{$profile.address}">My Profile</a>
                     {:else}
                         <a use:link href="/signup" class="button is-link">
                             <strong>Sign up</strong>

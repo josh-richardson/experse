@@ -25,21 +25,28 @@
 
     <div class="card-content">
         <div class="media">
-        <div class="media-left">
-            <figure class="image is-48x48">
-                <svg class="user-icon" width="48" height="48" data-jdenticon-value={post.owner} />
-            </figure>
-        </div>
+            <div class="media-left">
+                <figure class="image is-48x48">
+                    <svg class="user-icon" width="48" height="48" data-jdenticon-value={post.owner} />
+                </figure>
+            </div>
 
-        <div class="media-content">
-            <p class="item-info">Created by <span class="darker">{post.creator}</span> ({post.owner}), <span class="darker">{timeago.ago(post.date)}</span></p>
-            <a href="/p/{post.id}" use:link>
-                <p class="title is-4">{post.title}</p>
-            </a>
-        </div>
+            <div class="media-content">
+                <p class="item-info">
+                    Created by
+                    <span class="darker">
+                        <a href="/profile/{post.owner}" use:link>{post.creator}</a>
+                    </span>
+                    ({post.owner}),
+                    <span class="darker">{timeago.ago(post.date)}</span>
+                </p>
+                <a href="/p/{post.id}" use:link>
+                    <p class="title is-4">{post.title}</p>
+                </a>
+            </div>
         </div>
     </div>
 
 </div>
 
-<div class="post-content"/>
+<div class="post-content" />

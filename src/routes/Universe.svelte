@@ -18,11 +18,11 @@
         universe = $universes.filter(c => c.id === params.id)[0]
 
         if (universe) {
-          posts.set(devPosts)
+            posts.set(devPosts)
             api.postsByUniverse(universe.id, results => {
                 results.forEach(async p => {
                     const postDetails = JSON.parse(p.get('data', { decode: true, string: true }))
-                    const owner = await arweave.wallets.ownerToAddress(p.owner);
+                    const owner = await arweave.wallets.ownerToAddress(p.owner)
                     posts.update(current => [...current, { ...postDetails, id: p.id, owner: owner }])
                 })
             })
@@ -40,7 +40,11 @@
         </div>
         <div class="level-right">
             <div class="level-item">
-                <a use:link href="/posts/create/{universe.id}" class="button is-link" disabled={$profile.wallet ? undefined: "true"}>
+                <a
+                    use:link
+                    href="/posts/create/{universe.id}"
+                    class="button is-link"
+                    disabled={$profile.wallet ? undefined : 'true'}>
                     <strong>Create a Post</strong>
                 </a>
             </div>
