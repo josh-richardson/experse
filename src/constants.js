@@ -20,6 +20,8 @@ const EXPERSE_COMMENT_TAG = EXPERSE_TAG_PREFIX + 'experse-comment-alpha'
 const EXPERSE_COMMENT_POST_TAG = EXPERSE_TAG_PREFIX + 'experse-comment-post-alpha'
 const EXPERSE_UPDATE_TAG = EXPERSE_TAG_PREFIX + 'experse-update-item'
 const EXPERSE_UPDATE_ID_TAG = EXPERSE_TAG_PREFIX + 'experse-update-item-id'
+const EXPERSE_SCORE_TAG = EXPERSE_TAG_PREFIX + 'experse-score'
+const EXPERSE_SCORE_POST_TAG = EXPERSE_TAG_PREFIX + 'experse-score-post'
 
 export {
     VERSION,
@@ -33,5 +35,7 @@ export {
     EXPERSE_COMMENT_TAG,
     EXPERSE_COMMENT_POST_TAG,
     EXPERSE_UPDATE_TAG,
-    EXPERSE_UPDATE_ID_TAG
+    EXPERSE_UPDATE_ID_TAG,
+    EXPERSE_SCORE_TAG,
+    EXPERSE_SCORE_POST_TAG
 }
