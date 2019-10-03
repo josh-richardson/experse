@@ -247,12 +247,20 @@ export class api {
         })
     }
 
-    static updatesById(id, processResult) {
+    static updatesById(id, owner, processResult) {
         return api
             .allOfQuery({
-                op: 'equals',
-                expr1: EXPERSE_UPDATE_ID_TAG,
-                expr2: id,
+                op: 'and',
+                expr1: {
+                    op: 'equals',
+                    expr1: EXPERSE_UPDATE_ID_TAG,
+                    expr2: id,
+                },
+                expr2: {
+                    op: 'equals',
+                    expr1: 'from',
+                    expr2: owner,
+                },
             })
             .then(queryResult => {
                 processResult(queryResult)

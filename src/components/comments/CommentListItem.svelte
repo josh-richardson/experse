@@ -12,8 +12,8 @@
 
     let updates = []
 
-    const checkForPostUpdates = id => {
-        api.updatesById(id, results => {
+    const checkForPostUpdates = (id, owner) => {
+        api.updatesById(id, owner, results => {
             results.forEach(r => {
                 const updateDetails = JSON.parse(r.get('data', { decode: true, string: true }))
                 updates = _.orderBy([...updates, updateDetails], ['date'])
@@ -25,7 +25,7 @@
 
     onMount(() => {
         setTimeout(() => {
-            checkForPostUpdates(comment.id)
+            checkForPostUpdates(comment.id, comment.owner)
         }, 1000)
     })
 
