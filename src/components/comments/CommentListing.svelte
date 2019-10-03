@@ -22,6 +22,6 @@
 </script>
 
 <!--a listing of comments on a post-->
-{#each _.orderBy($comments, ['score']).reverse() as comment}
+{#each $comments.filter(x => x.score === undefined).length === 0 ? _.orderBy($comments, ['score']).reverse() : _.orderBy($comments, ['date']) as comment}
     <CommentListItem {comment} />
 {/each}

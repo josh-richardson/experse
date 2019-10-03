@@ -53,11 +53,11 @@
                     });
                 }
                 setTimeout(() => {
-                    comments.update(c => [...c.filter(x => x.id !== id), {
-                        ...c.filter(x => x.id === id)[0],
+                    comments.update(c => [...$comments.filter(x => x.id !== id), {
+                        ...$comments.filter(x => x.id === id)[0],
                         score: score
                     }])
-                }, 500)
+                }, 1000)
             })
     }
     let unhidden = false;
