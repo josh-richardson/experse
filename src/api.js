@@ -6,8 +6,8 @@ import {
     EXPERSE_POST_UNIVERSE_TAG,
     EXPERSE_PROFILE_TAG,
     EXPERSE_UNIVERSE_NAME_TAG,
-    EXPERSE_UNIVERSE_TAG,
-    EXPERSE_USERNAME_TAG,
+    EXPERSE_UNIVERSE_TAG, EXPERSE_UPDATE_ID_TAG, EXPERSE_UPDATE_TAG,
+    EXPERSE_USERNAME_TAG
 } from './constants'
 import * as _ from 'lodash'
 
@@ -203,6 +203,25 @@ export class api {
             .then(queryResult => {
                 processResult(queryResult)
             })
+    }
+
+    static createUpdate(update, profile) {
+        return this.sendTransaction(JSON.stringify({ ...update, date: new Date() }), profile.wallet, {
+            [EXPERSE_UPDATE_TAG]: 'true',
+            [EXPERSE_UPDATE_ID_TAG]: update.updatedContent,
+        })
+    }
+
+    static updatesById(id, processResult) {
+        return api
+          .allOfQuery({
+              op: 'equals',
+              expr1: EXPERSE_UPDATE_ID_TAG,
+              expr2: id,
+          })
+          .then(queryResult => {
+              processResult(queryResult)
+          })
     }
 
     static signupUser(profile) {

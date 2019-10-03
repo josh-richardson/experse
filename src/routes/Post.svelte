@@ -10,15 +10,26 @@
     import { link } from 'svelte-spa-router'
 
     export let params = {}
-    var editObject = {}
+    var editObject = {body: ''}
+
+
+    const checkForPostUpdates = (id) => {
+        api.updatesById(id, (result) => {
+          console.log(result);
+        })
+    }
+
 
     var converter = new showdown.Converter()
     var post, postHtml
     $: {
-        post = $posts.filter(c => c.id === params.id)[0]
-        if (post) {
-            postHtml = converter.makeHtml(post.body)
-            editObject.body = post.body
+        if (!post) {
+            post = $posts.filter(c => c.id === params.id)[0]
+            if (post) {
+                postHtml = converter.makeHtml(post.body)
+                editObject.body = post.body
+                checkForPostUpdates(post.id);
+            }
         }
     }
     if ($posts.length === 0) {
@@ -50,6 +61,17 @@
     }
 
     let editing = false
+
+    const onCompleteEditClicked = () => {
+      editObject.updatedContent = post.id;
+      api.createUpdate(editObject, $profile).then(result => {
+        if (result.id) {
+          editObject = {body: ''}
+          editing = !editing
+          toastMessage('Success! Your edit will be visible after being mined.', 'is-success')
+        }
+      })
+    }
 </script>
 
 <style>
@@ -74,24 +96,24 @@
         margin-top: 0.4em;
     }
 
-    .upvote-container {
+    :global(.upvote-container) {
         max-width: 100px;
         padding-right: 0.8em;
     }
 
-    .upvote-container .column {
+    :global(.upvote-container .column) {
         padding: 0 !important;
     }
 
-    .upvote-container p {
-        margin: 0;
-        margin-left: 10px;
+    :global(.upvote-container p) {
+        margin: 0 0 0 10px;
         padding: 0;
         font-size: 0.75em;
     }
 
-    .column-upvotes {
-        transform: translateY(-10px);
+
+    :global(.column-upvotes) {
+        transform: translateY(-12px);
     }
 </style>
 
@@ -137,7 +159,7 @@
 
                     {#if editing}
                         <textarea bind:value={editObject.body} class="textarea is-link" placeholder="Text to edit!" />
-                        <a class="mt-1 button is-pulled-right is-link" on:click={onCreateReplyClicked}>Complete edit</a>
+                        <a class="mt-1 button is-pulled-right is-link" on:click={onCompleteEditClicked}>Complete edit</a>
                     {:else}
                         <div class="post-content">
                             <p class="mb-1">
@@ -147,7 +169,7 @@
                     {/if}
 
                 </div>
-                {#if true}
+                {#if $profile.wallet && $profile.address === post.owner}
                     <div class="media-right">
                         <a
                             class="button tooltip"
