@@ -9,6 +9,7 @@
     import { toastMessage } from '../utils'
     import { link } from 'svelte-spa-router'
     import * as _ from 'lodash'
+    import { comments } from '../stores/comments'
 
     export let params = {}
     var editObject = { body: '' }
@@ -17,8 +18,8 @@
     let score = 0
     var post, postHtml
 
-    const checkForPostUpdates = id => {
-        api.updatesById(id, results => {
+    const checkForPostUpdates = (id, owner) => {
+        api.updatesById(id, owner, results => {
             results.forEach(r => {
                 const updateDetails = JSON.parse(r.get('data', { decode: true, string: true }))
                 updates = _.orderBy([...updates, updateDetails], ['date'])
@@ -42,11 +43,12 @@
 
     $: {
         if (!post) {
+            comments.set([])
             post = $posts.filter(c => c.id === params.id)[0]
             if (post) {
                 postHtml = converter.makeHtml(post.body)
                 editObject.body = post.body
-                checkForPostUpdates(post.id)
+                checkForPostUpdates(post.id, post.owner)
             }
         }
     }
