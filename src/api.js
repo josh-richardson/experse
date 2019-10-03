@@ -186,7 +186,6 @@ export class api {
     }
 
     static createScore(score, profile) {
-        console.log(score.postId)
         return this.sendTransaction(JSON.stringify({ ...score, date: new Date() }), profile.wallet, {
             [EXPERSE_SCORE_TAG]: 'true',
             [EXPERSE_SCORE_POST_TAG]: score.postId,

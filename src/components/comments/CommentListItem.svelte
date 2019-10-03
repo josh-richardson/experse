@@ -51,13 +51,13 @@
             <div class="media-left">
                 <div class="columns upvote-container">
                     <div class="column column-upvotes">
-                        <a class="button is-small is-white tooltip is-tooltip-left" data-tooltip="Upvote (0.1 AR)">
+                        <a class="button is-small is-white tooltip is-tooltip-left" disabled={!$profile.wallet} data-tooltip="Upvote (0.1 AR)">
                             <span class="icon is-small">
                                 <i class="fas fa-angle-up"/>
                             </span>
                         </a>
                         <p>0</p>
-                        <a class="button is-small is-white tooltip is-tooltip-left" data-tooltip="Downvote (0.1 AR)">
+                        <a class="button is-small is-white tooltip is-tooltip-left" disabled={!$profile.wallet} data-tooltip="Downvote (0.1 AR)">
                             <span class="icon is-small">
                                 <i class="fas fa-angle-down"/>
                             </span>
