@@ -2,7 +2,7 @@
     import { api } from '../../api'
     import { arweave } from '../../constants'
     import CommentListItem from './CommentListItem.svelte'
-
+    import * as _ from 'lodash'
     var comments = []
     export let postId
     $: {
@@ -12,6 +12,7 @@
                     const commentDetails = JSON.parse(c.get('data', { decode: true, string: true }))
                     const owner = await arweave.wallets.ownerToAddress(c.owner)
                     comments = [...comments, { ...commentDetails, owner }]
+                    comments = _.orderBy(comments, ['date'])
                 })
             })
         }
