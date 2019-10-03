@@ -14,6 +14,7 @@
     var editObject = { body: '' }
 
     let updates = []
+    let score = 0
     var post, postHtml
 
     const checkForPostUpdates = id => {
@@ -24,6 +25,15 @@
                 post.oldBody = post.body
                 post.body = updates[0].body
                 postHtml = converter.makeHtml(post.body)
+            })
+        })
+
+        api.scoresByPost(post.id, result => {
+            console.log(result)
+            results.forEach(r => {
+                const scoreDetails = JSON.parse(r.get('data', { decode: true, string: true }))
+                console.log(scoreDetails)
+                score += scoreDetails.type == 'up' ? 1 : -1
             })
         })
     }
@@ -81,6 +91,7 @@
             }
         })
     }
+
 
     const onScoreUpClicked = () => {
         api.createScore({ type: 'up', postID: post.id }, $profile).then(result => {
@@ -157,7 +168,7 @@
                                     <i class="fas fa-angle-up" />
                                 </span>
                             </a>
-                            <p>0</p>
+                            <p>{score}</p>
                             <a
                                 class="button is-small is-white tooltip is-tooltip-left"
                                 data-tooltip="Downvote (0.1 AR)"

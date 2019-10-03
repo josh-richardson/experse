@@ -204,6 +204,18 @@ export class api {
             })
     }
 
+    static scoresByPost(postId, processResult) {
+        return api
+            .allOfQuery({
+                op: 'equals',
+                expr1: EXPERSE_SCORE_POST_TAG,
+                expr2: postId,
+            })
+            .then(queryResult => {
+                processResult(queryResult)
+            })
+    }
+
     static postsByUniverse(universe, processResult) {
         return api
             .allOfQuery({
