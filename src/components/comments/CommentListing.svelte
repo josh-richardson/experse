@@ -22,6 +22,6 @@
 </script>
 
 <!--a listing of comments on a post-->
-{#each $comments as comment}
+{#each _.orderBy($comments, ['score']).reverse() as comment}
     <CommentListItem {comment} />
 {/each}

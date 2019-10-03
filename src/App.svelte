@@ -139,21 +139,21 @@
 
     <div id="navbarBasicExample" class="navbar-menu {isBurgerVisible ? 'is-active' : ''}">
         <div class="navbar-start">
-            <a href="/" use:link class="navbar-item">Universes</a>
-            <a href="/search" use:link class="navbar-item">Search</a>
-            <a href="/about" use:link class="navbar-item">About</a>
+            <a href="/" on:click={toggleBurger} use:link class="navbar-item">Universes</a>
+            <a href="/search" on:click={toggleBurger} use:link class="navbar-item">Search</a>
+            <a href="/about" on:click={toggleBurger} use:link class="navbar-item">About</a>
         </div>
 
         <div class="navbar-end">
             <div class="navbar-item">
                 <div class="buttons">
                     {#if $profile.wallet}
-                        <a use:link class="button is-light" href="/profile/{$profile.address}">My Profile</a>
+                        <a use:link class="button is-light" href="/profile/{$profile.address}" on:click={toggleBurger}>My Profile</a>
                     {:else}
-                        <a use:link href="/signup" class="button is-link">
+                        <a use:link href="/signup" class="button is-link" on:click={toggleBurger}>
                             <strong>Sign up</strong>
                         </a>
-                        <a use:link class="button is-light" href="/login">Log in</a>
+                        <a use:link class="button is-light" href="/login" on:click={toggleBurger}>Log in</a>
                     {/if}
                 </div>
             </div>

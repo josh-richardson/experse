@@ -57,7 +57,7 @@
                 ownersAccountedFor.push(scoreObj.owner)
 
                 score += scoreObj.type == 'up' ? 1 : -1
-            
+
                 if(scoreObj.owner == $profile.address) {
                     userVoted = true
                 }
@@ -80,11 +80,14 @@
     }
 
     $: {
-        var potentialUniverses = $universes.filter(x => x.id === post.universeId);
-        if (potentialUniverses.length > 0) {
-            currentUniverse = potentialUniverses[0];
-        }
+      if (post) {
+          var potentialUniverses = $universes.filter(x => x.id === post.universeId);
+          if (potentialUniverses.length > 0) {
+              currentUniverse = potentialUniverses[0];
+          }
+      }
     }
+
 
     if ($posts.length === 0) {
         arweave.transactions.get(params.id).then(async result => {

@@ -5,7 +5,7 @@
     import { link } from 'svelte-spa-router'
     import { api } from '../../api'
     import { toastMessage } from '../../utils'
-
+    import { comments } from '../../stores/comments'
     import { onMount } from 'svelte'
 
     let historyMode = false
@@ -15,11 +15,7 @@
     let score = 0
     let userVoted = false
 
-    const asyncForEach = async (array, callback) => {
-        for (let index = 0; index < array.length; index++) {
-            await callback(array[index], index, array);
-        }
-    }
+
 
     const checkForPostUpdates = (id, owner) => {
         api.updatesById(id, owner, results => {
@@ -32,37 +28,50 @@
             })
         })
 
-        let scores = []
+            api.scoresByPost(id, results => {
+                let scores = [];
+                let ownersAccountedFor = []
+                for (let r of results) {
+                    arweave.wallets.ownerToAddress(r.owner).then(owner => {
+                        const scoreDetails = JSON.parse(r.get('data', { decode: true, string: true }))
+                        scores = _.orderBy([...scores, { ...scoreDetails, owner }], ['date'])
 
-        api.scoresByPost(comment.id, async result => {
-            let ownersAccountedFor = []
-            await asyncForEach(result, async r => {
-                const owner = await arweave.wallets.ownerToAddress(r.owner)
-                const scoreDetails = JSON.parse(r.get('data', { decode: true, string: true }))
-                scores = _.orderBy([...scores, { ...scoreDetails, owner }], ['date'])
+
+                        if (scores.length === results.length) {
+                            for(let scoreObj of scores) {
+                                if(ownersAccountedFor.includes(scoreObj.owner)) {
+                                    continue
+                                }
+                                ownersAccountedFor.push(scoreObj.owner)
+
+                                score += scoreObj.type === 'up' ? 1 : -1
+                                if(scoreObj.owner == $profile.address) {
+                                    userVoted = true
+                                }
+                            }
+                        }
+                    });
+                }
+                setTimeout(() => {
+                    comments.update(c => [...c.filter(x => x.id !== id), {
+                        ...c.filter(x => x.id === id)[0],
+                        score: score
+                    }])
+                }, 500)
             })
-
-            for(let scoreObj of scores) {
-                if(ownersAccountedFor.includes(scoreObj.owner)) {
-                    continue
-                }
-                ownersAccountedFor.push(scoreObj.owner)
-
-                score += scoreObj.type == 'up' ? 1 : -1
-            
-                if(scoreObj.owner == $profile.address) {
-                    userVoted = true
-                }
-            }
-        })
     }
+    let unhidden = false;
 
     onMount(() => {
         //svelte bug? Who knows? This is needed.
         setTimeout(() => {
+
+
             editObject = {body: comment.body}
             checkForPostUpdates(comment.id, comment.owner)
         }, 1000)
+
+
     })
 
     var editObject = { body: comment.body }
@@ -116,6 +125,7 @@
     }
 </script>
 
+
 <!--a single item represnting a comment-->
 <div class="card mb-1">
     <div class="card-content">
@@ -128,7 +138,7 @@
                                 <i class="fas fa-angle-up"/>
                             </span>
                         </a>
-                        <p>{score}</p>
+                        <p>{comment.score ? comment.score : 0}</p>
                         <a class="button is-small is-white tooltip is-tooltip-left" on:click={onScoreDownClicked} data-tooltip="Downvote (0.1 AR)">
                             <span class="icon is-small">
                                 <i class="fas fa-angle-down"/>
@@ -148,7 +158,7 @@
                     <span class="darker">
                         <a href="/profile/{comment.owner}" use:link>{comment.creator}</a>
                     </span>
-                    ({comment.owner}),`
+                    ({comment.owner}),
                     <span class="darker">{timeago.ago(comment.date)}{updates.length !== 0 ? ', updated ' + timeago.ago(updates[updates.length - 1].date) : ''}</span>
                 </p>
 
@@ -169,6 +179,10 @@
                             {comment.oldBody}
                         </p>
                     </div>
+                {:else if comment.score < 0 && !unhidden}
+                    <a class="button is-small" on:click={() => {unhidden = !unhidden}} >
+                            Unhide
+                    </a>
                 {:else}
                     <div class="post-content">
                         <p>{comment.body}</p>
