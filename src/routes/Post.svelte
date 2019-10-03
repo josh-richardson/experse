@@ -10,6 +10,7 @@
     import { link } from 'svelte-spa-router'
     import * as _ from 'lodash'
     import { comments } from '../stores/comments'
+    import { universes } from '../stores/universes'
 
     export let params = {}
     var editObject = { body: '' }
@@ -17,6 +18,7 @@
     let updates = []
     let score = 0
     var post, postHtml
+    var currentUniverse
 
     const checkForPostUpdates = (id, owner) => {
         api.updatesById(id, owner, results => {
@@ -25,8 +27,8 @@
                 updates = _.orderBy([...updates, updateDetails], ['date'])
                 if (!post.oldBody) post.oldBody = post.body
                 post.body = updates[updates.length - 1].body
+                editObject = { body: post.body }
                 postHtml = converter.makeHtml(post.body)
-                console.log(updates);
             })
         })
 
@@ -53,6 +55,14 @@
             }
         }
     }
+
+    $: {
+        var potentialUniverses = $universes.filter(x => x.id === post.universeId);
+        if (potentialUniverses.length > 0) {
+            currentUniverse = potentialUniverses[0];
+        }
+    }
+
     if ($posts.length === 0) {
         arweave.transactions.get(params.id).then(async result => {
             const postDetails = JSON.parse(result.get('data', { decode: true, string: true }))
@@ -196,7 +206,11 @@
                             <a href="/profile/{post.owner}" use:link>{post.creator}</a>
                         </span>
                         ({post.owner}),
-                        <span class="darker">{timeago.ago(post.date)}</span>
+                        <span class="darker">{timeago.ago(post.date)} {updates.length !== 0 ? ', updated ' + timeago.ago(updates[updates.length - 1].date) : ''}
+                        {#if currentUniverse}
+                            in <a href="/u/{currentUniverse.id}" use:link>/u/{currentUniverse.name}</a>
+                        {/if}
+                        </span>
                     </p>
                     <p class="is-size-4 post-title">{post.title}</p>
                     <hr class="in-post" />

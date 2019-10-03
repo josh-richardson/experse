@@ -18,13 +18,16 @@
                 const updateDetails = JSON.parse(r.get('data', { decode: true, string: true }))
                 updates = _.orderBy([...updates, updateDetails], ['date'])
                 if (!comment.oldBody) comment.oldBody = comment.body
-                comment.body = updates[0].body
+                comment.body = updates[updates.length - 1].body
+                editObject = { body: comment.body }
             })
         })
     }
 
     onMount(() => {
+        //svelte bug? Who knows? This is needed.
         setTimeout(() => {
+            editObject = {body: comment.body}
             checkForPostUpdates(comment.id, comment.owner)
         }, 1000)
     })
@@ -77,7 +80,7 @@
                         <a href="/profile/{comment.owner}" use:link>{comment.creator}</a>
                     </span>
                     ({comment.owner}),
-                    <span class="darker">{timeago.ago(comment.date)}</span>
+                    <span class="darker">{timeago.ago(comment.date)} {updates.length !== 0 ? ', updated ' + timeago.ago(updates[updates.length - 1].date) : ''}</span>
                 </p>
 
                 {#if editing}

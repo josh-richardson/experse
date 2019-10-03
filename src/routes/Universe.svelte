@@ -19,7 +19,6 @@
         universe = $universes.filter(c => c.id === params.id)[0]
 
         if (universe) {
-            posts.set(devPosts)
             api.postsByUniverse(universe.id, results => {
                 results.forEach(async p => {
                     const postDetails = JSON.parse(p.get('data', { decode: true, string: true }))
