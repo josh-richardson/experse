@@ -22,7 +22,6 @@
                     validatedFile = true
 
                     api.retrieveUserProfile(address, result => {
-                        console.log(result)
                         if (result === false) {
                             toastMessage('Please make sure to sign up before trying to log in!', 'is-danger')
                             return

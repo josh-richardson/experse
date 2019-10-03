@@ -9,7 +9,6 @@
     import { toastMessage } from '../utils'
     import { link } from 'svelte-spa-router'
 
-
     export let params = {}
     var editObject = {}
 
@@ -19,7 +18,7 @@
         post = $posts.filter(c => c.id === params.id)[0]
         if (post) {
             postHtml = converter.makeHtml(post.body)
-            editObject.body = post.body;
+            editObject.body = post.body
         }
     }
     if ($posts.length === 0) {
@@ -51,7 +50,6 @@
     }
 
     let editing = false
-
 </script>
 
 <style>
@@ -75,6 +73,26 @@
     hr.in-post {
         margin-top: 0.4em;
     }
+
+    .upvote-container {
+        max-width: 100px;
+        padding-right: 0.8em;
+    }
+
+    .upvote-container .column {
+        padding: 0 !important;
+    }
+
+    .upvote-container p {
+        margin: 0;
+        margin-left: 10px;
+        padding: 0;
+        font-size: 0.75em;
+    }
+
+    .column-upvotes {
+        transform: translateY(-10px);
+    }
 </style>
 
 <!--details of a post and associated replies-->
@@ -83,13 +101,27 @@
         <div class="card-content">
             <div class="media">
                 <div class="media-left">
-                    <a class="button is-white">White</a>
-                    <a class="button is-white">White</a>
-                    <figure class="image is-48x48">
-                        <svg class="user-icon" width="48" height="48" data-jdenticon-value={post.owner} />
-                    </figure>
+                    <div class="columns upvote-container">
+                        <div class="column column-upvotes">
+                            <a class="button is-small is-white tooltip is-tooltip-left" data-tooltip="Upvote (0.1 AR)">
+                                <span class="icon is-small">
+                                    <i class="fas fa-angle-up" />
+                                </span>
+                            </a>
+                            <p>0</p>
+                            <a class="button is-small is-white tooltip is-tooltip-left" data-tooltip="Downvote (0.1 AR)">
+                                <span class="icon is-small">
+                                    <i class="fas fa-angle-down" />
+                                </span>
+                            </a>
+                        </div>
+                        <div class="column">
+                            <figure class="image is-48x48">
+                                <svg class="user-icon" width="48" height="48" data-jdenticon-value={post.owner} />
+                            </figure>
+                        </div>
+                    </div>
                 </div>
-
                 <div class="media-content">
 
                     <p class="item-info">
@@ -105,7 +137,7 @@
 
                     {#if editing}
                         <textarea bind:value={editObject.body} class="textarea is-link" placeholder="Text to edit!" />
-                        <a class="mt-1 button is-pulled-right is-link tooltip" on:click={onCreateReplyClicked} data-tooltip="Tooltip Text">Complete edit</a>
+                        <a class="mt-1 button is-pulled-right is-link" on:click={onCreateReplyClicked}>Complete edit</a>
                     {:else}
                         <div class="post-content">
                             <p class="mb-1">
