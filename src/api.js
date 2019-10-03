@@ -205,6 +205,18 @@ export class api {
             })
     }
 
+    static allPosts(processResult) {
+        return api
+            .allOfQuery({
+                op: 'equals',
+                expr1: EXPERSE_POST_TAG,
+                expr2: 'true',
+            })
+            .then(queryResult => {
+                processResult(queryResult)
+            })
+    }
+
     static createUpdate(update, profile) {
         return this.sendTransaction(JSON.stringify({ ...update, date: new Date() }), profile.wallet, {
             [EXPERSE_UPDATE_TAG]: 'true',
