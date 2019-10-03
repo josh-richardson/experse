@@ -1,5 +1,6 @@
 <script>
     import { profile } from '../../stores/user'
+    import { arweave } from '../../constants'
     import * as timeago from 'time-ago'
     import { link } from 'svelte-spa-router'
     import { api } from '../../api'
@@ -11,6 +12,14 @@
     export let comment
 
     let updates = []
+    let score = 0
+    let userVoted = false
+
+    const asyncForEach = async (array, callback) => {
+        for (let index = 0; index < array.length; index++) {
+            await callback(array[index], index, array);
+        }
+    }
 
     const checkForPostUpdates = (id, owner) => {
         api.updatesById(id, owner, results => {
@@ -21,6 +30,30 @@
                 comment.body = updates[updates.length - 1].body
                 editObject = { body: comment.body }
             })
+        })
+
+        let scores = []
+
+        api.scoresByPost(comment.id, async result => {
+            let ownersAccountedFor = []
+            await asyncForEach(result, async r => {
+                const owner = await arweave.wallets.ownerToAddress(r.owner)
+                const scoreDetails = JSON.parse(r.get('data', { decode: true, string: true }))
+                scores = _.orderBy([...scores, { ...scoreDetails, owner }], ['date'])
+            })
+
+            for(let scoreObj of scores) {
+                if(ownersAccountedFor.includes(scoreObj.owner)) {
+                    continue
+                }
+                ownersAccountedFor.push(scoreObj.owner)
+
+                score += scoreObj.type == 'up' ? 1 : -1
+            
+                if(scoreObj.owner == $profile.address) {
+                    userVoted = true
+                }
+            }
         })
     }
 
@@ -45,6 +78,42 @@
             }
         })
     }
+
+    const onScoreUpClicked = () => {
+        if(!$profile.wallet) {
+            toastMessage('Please log in!', 'is-danger')
+            return
+        }
+
+        if(userVoted) {
+            toastMessage('You have already scored this post!', 'is-danger')
+            return
+        }
+
+        api.createScore({ type: 'up', postId: comment.id }, $profile).then(result => {
+            if (result.id) {
+                toastMessage('Success! Your scoring will be visible after being mined.', 'is-success')
+            }
+        })
+    }
+
+    const onScoreDownClicked = () => {
+        if(!$profile.wallet) {
+            toastMessage('Please log in!', 'is-danger')
+            return
+        }
+
+        if(userVoted) {
+            toastMessage('You have already scored this post!', 'is-danger')
+            return
+        }
+
+        api.createScore({ type: 'down', postId: comment.id }, $profile).then(result => {
+            if (result.id) {
+                toastMessage('Success! Your scoring will be visible after being mined.', 'is-success')
+            }
+        })
+    }
 </script>
 
 <!--a single item represnting a comment-->
@@ -54,13 +123,13 @@
             <div class="media-left">
                 <div class="columns upvote-container">
                     <div class="column column-upvotes">
-                        <a class="button is-small is-white tooltip is-tooltip-left" data-tooltip="Upvote (0.1 AR)">
+                        <a class="button is-small is-white tooltip is-tooltip-left" on:click={onScoreUpClicked} data-tooltip="Upvote (0.1 AR)">
                             <span class="icon is-small">
                                 <i class="fas fa-angle-up"/>
                             </span>
                         </a>
-                        <p>0</p>
-                        <a class="button is-small is-white tooltip is-tooltip-left" data-tooltip="Downvote (0.1 AR)">
+                        <p>{score}</p>
+                        <a class="button is-small is-white tooltip is-tooltip-left" on:click={onScoreDownClicked} data-tooltip="Downvote (0.1 AR)">
                             <span class="icon is-small">
                                 <i class="fas fa-angle-down"/>
                             </span>

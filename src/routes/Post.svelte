@@ -20,6 +20,14 @@
     var post, postHtml
     var currentUniverse
 
+    let userVoted = false
+
+    const asyncForEach = async (array, callback) => {
+        for (let index = 0; index < array.length; index++) {
+            await callback(array[index], index, array);
+        }
+    }
+
     const checkForPostUpdates = (id, owner) => {
         api.updatesById(id, owner, results => {
             results.forEach(r => {
@@ -32,12 +40,28 @@
             })
         })
 
-        api.scoresByPost(post.id, result => {
-            result.forEach(r => {
+        let scores = []
+
+        api.scoresByPost(post.id, async result => {
+            let ownersAccountedFor = []
+            await asyncForEach(result, async r => {
+                const owner = await arweave.wallets.ownerToAddress(r.owner)
                 const scoreDetails = JSON.parse(r.get('data', { decode: true, string: true }))
-                console.log(scoreDetails)
-                score += scoreDetails.type == 'up' ? 1 : -1
+                scores = _.orderBy([...scores, { ...scoreDetails, owner }], ['date'])
             })
+
+            for(let scoreObj of scores) {
+                if(ownersAccountedFor.includes(scoreObj.owner)) {
+                    continue
+                }
+                ownersAccountedFor.push(scoreObj.owner)
+
+                score += scoreObj.type == 'up' ? 1 : -1
+            
+                if(scoreObj.owner == $profile.address) {
+                    userVoted = true
+                }
+            }
         })
     }
 
@@ -106,6 +130,16 @@
 
 
     const onScoreUpClicked = () => {
+        if(!$profile.wallet) {
+            toastMessage('Please log in!', 'is-danger')
+            return
+        }
+
+        if(userVoted) {
+            toastMessage('You have already scored this post!', 'is-danger')
+            return
+        }
+
         api.createScore({ type: 'up', postId: post.id }, $profile).then(result => {
             if (result.id) {
                 toastMessage('Success! Your scoring will be visible after being mined.', 'is-success')
@@ -114,6 +148,16 @@
     }
 
     const onScoreDownClicked = () => {
+        if(!$profile.wallet) {
+            toastMessage('Please log in!', 'is-danger')
+            return
+        }
+
+        if(userVoted) {
+            toastMessage('You have already scored this post!', 'is-danger')
+            return
+        }
+
         api.createScore({ type: 'down', postId: post.id }, $profile).then(result => {
             if (result.id) {
                 toastMessage('Success! Your scoring will be visible after being mined.', 'is-success')
