@@ -13,6 +13,7 @@
     posts.set([])
 
     let universe = undefined
+    import * as _ from 'lodash'
 
     $: {
         universe = $universes.filter(c => c.id === params.id)[0]
@@ -23,7 +24,8 @@
                 results.forEach(async p => {
                     const postDetails = JSON.parse(p.get('data', { decode: true, string: true }))
                     const owner = await arweave.wallets.ownerToAddress(p.owner)
-                    posts.update(current => [...current, { ...postDetails, id: p.id, owner: owner }])
+                    posts.update(current =>  _.orderBy([...current, { ...postDetails, id: p.id, owner: owner }], ['date']))
+
                 })
             })
         }

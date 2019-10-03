@@ -8,20 +8,31 @@
     import CommentListing from '../components/comments/CommentListing.svelte'
     import { toastMessage } from '../utils'
     import { link } from 'svelte-spa-router'
+    import * as _ from 'lodash'
 
     export let params = {}
     var editObject = {body: ''}
 
+    let updates = [];
+    var post, postHtml
 
     const checkForPostUpdates = (id) => {
-        api.updatesById(id, (result) => {
-          console.log(result);
+        api.updatesById(id, (results) => {
+          results.forEach(r => {
+              const updateDetails = JSON.parse(r.get('data', { decode: true, string: true }))
+              updates = _.orderBy([...updates, updateDetails], ['date']);
+
+              post.oldBody = post.body;
+              post.body = updates[0].body;
+              postHtml = converter.makeHtml(post.body)
+
+          })
         })
     }
 
 
     var converter = new showdown.Converter()
-    var post, postHtml
+
     $: {
         if (!post) {
             post = $posts.filter(c => c.id === params.id)[0]

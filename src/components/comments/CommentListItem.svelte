@@ -51,7 +51,7 @@
             </div>
             <div class="media-content">
                 <p class="item-info">
-                    Posted by
+                    Commented by
 
                     <span class="darker"> <a href="/profile/{comment.owner}" use:link>{comment.creator}</a></span>
                     ({comment.owner}),
