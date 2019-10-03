@@ -79,8 +79,8 @@
                     <span class="darker">
                         <a href="/profile/{comment.owner}" use:link>{comment.creator}</a>
                     </span>
-                    ({comment.owner}),
-                    <span class="darker">{timeago.ago(comment.date)} {updates.length !== 0 ? ', updated ' + timeago.ago(updates[updates.length - 1].date) : ''}</span>
+                    ({comment.owner}),`
+                    <span class="darker">{timeago.ago(comment.date)}{updates.length !== 0 ? ', updated ' + timeago.ago(updates[updates.length - 1].date) : ''}</span>
                 </p>
 
                 {#if editing}
