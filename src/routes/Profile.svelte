@@ -4,6 +4,8 @@
     export let params
 
     let filterFunction = universe => {
+      console.log(universe.owner)
+        console.log(params.id)
         return universe.owner === params.id
     }
 </script>

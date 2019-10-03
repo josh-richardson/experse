@@ -7,9 +7,9 @@
 </script>
 
 {#each $universes as universe}
-    {#if filter && filter(universe)}
+    {#if filter && filter(universe) === true}
         <Universe {universe} />
-    {:else}
+    {:else if !filter}
         <Universe {universe} />
     {/if}
 {/each}

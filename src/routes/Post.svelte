@@ -83,6 +83,8 @@
         <div class="card-content">
             <div class="media">
                 <div class="media-left">
+                    <a class="button is-white">White</a>
+                    <a class="button is-white">White</a>
                     <figure class="image is-48x48">
                         <svg class="user-icon" width="48" height="48" data-jdenticon-value={post.owner} />
                     </figure>
