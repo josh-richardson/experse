@@ -9,38 +9,35 @@
 
     export let comment
 
-    let updates = [];
+    let updates = []
 
-    const checkForPostUpdates = (id) => {
-        api.updatesById(id, (results) => {
+    const checkForPostUpdates = id => {
+        api.updatesById(id, results => {
             results.forEach(r => {
                 const updateDetails = JSON.parse(r.get('data', { decode: true, string: true }))
-                updates = _.orderBy([...updates, updateDetails], ['date']);
-                console.log(updates);
+                updates = _.orderBy([...updates, updateDetails], ['date'])
+                console.log(updates)
 
-                comment.oldBody = comment.body;
-                comment.body = updates[0].body;
+                comment.oldBody = comment.body
+                comment.body = updates[0].body
             })
         })
     }
 
     onMount(() => {
-      setTimeout(() => {
-          checkForPostUpdates(comment.id);
-      }, 1000)
-
-
+        setTimeout(() => {
+            checkForPostUpdates(comment.id)
+        }, 1000)
     })
 
-
-    var editObject = {body: comment.body}
+    var editObject = { body: comment.body }
     let editing = false
 
     const onCompleteEditClicked = () => {
-        editObject.updatedContent = comment.id;
+        editObject.updatedContent = comment.id
         api.createUpdate(editObject, $profile).then(result => {
             if (result.id) {
-                editObject = {body: comment.body}
+                editObject = { body: comment.body }
                 editing = !editing
                 toastMessage('Success! Your edit will be visible after being mined.', 'is-success')
             }
@@ -56,15 +53,15 @@
                 <div class="columns upvote-container">
                     <div class="column column-upvotes">
                         <a class="button is-small is-white tooltip is-tooltip-left" data-tooltip="Upvote (0.1 AR)">
-                                <span class="icon is-small">
-                                    <i class="fas fa-angle-up" />
-                                </span>
+                            <span class="icon is-small">
+                                <i class="fas fa-angle-up" />
+                            </span>
                         </a>
                         <p>0</p>
                         <a class="button is-small is-white tooltip is-tooltip-left" data-tooltip="Downvote (0.1 AR)">
-                                <span class="icon is-small">
-                                    <i class="fas fa-angle-down" />
-                                </span>
+                            <span class="icon is-small">
+                                <i class="fas fa-angle-down" />
+                            </span>
                         </a>
                     </div>
                     <div class="column">
@@ -77,8 +74,9 @@
             <div class="media-content">
                 <p class="item-info">
                     Commented by
-
-                    <span class="darker"> <a href="/profile/{comment.owner}" use:link>{comment.creator}</a></span>
+                    <span class="darker">
+                        <a href="/profile/{comment.owner}" use:link>{comment.creator}</a>
+                    </span>
                     ({comment.owner}),
                     <span class="darker">{timeago.ago(comment.date)}</span>
                 </p>
@@ -94,11 +92,12 @@
             </div>
             {#if $profile.wallet && $profile.address === comment.owner}
                 <div class="media-right">
-                    <a class="button tooltip"
-                       data-tooltip="Toggle post editing"
-                       on:click={() => {
-                editing = !editing
-                }}>
+                    <a
+                        class="button tooltip"
+                        data-tooltip="Toggle post editing"
+                        on:click={() => {
+                            editing = !editing
+                        }}>
                         <span class="icon is-small">
                             <i class="fas fa-edit" />
                         </span>

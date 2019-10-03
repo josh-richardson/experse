@@ -11,23 +11,22 @@
     import * as _ from 'lodash'
 
     export let params = {}
-    var editObject = {body: ''}
+    var editObject = { body: '' }
 
-    let updates = [];
+    let updates = []
     var post, postHtml
 
-    const checkForPostUpdates = (id) => {
-        api.updatesById(id, (results) => {
-          results.forEach(r => {
-              const updateDetails = JSON.parse(r.get('data', { decode: true, string: true }))
-              updates = _.orderBy([...updates, updateDetails], ['date']);
-              post.oldBody = post.body;
-              post.body = updates[0].body;
-              postHtml = converter.makeHtml(post.body)
-          })
+    const checkForPostUpdates = id => {
+        api.updatesById(id, results => {
+            results.forEach(r => {
+                const updateDetails = JSON.parse(r.get('data', { decode: true, string: true }))
+                updates = _.orderBy([...updates, updateDetails], ['date'])
+                post.oldBody = post.body
+                post.body = updates[0].body
+                postHtml = converter.makeHtml(post.body)
+            })
         })
     }
-
 
     var converter = new showdown.Converter()
 
@@ -37,7 +36,7 @@
             if (post) {
                 postHtml = converter.makeHtml(post.body)
                 editObject.body = post.body
-                checkForPostUpdates(post.id);
+                checkForPostUpdates(post.id)
             }
         }
     }
@@ -73,18 +72,18 @@
     let historyMode = false
 
     const onCompleteEditClicked = () => {
-      editObject.updatedContent = post.id;
-      api.createUpdate(editObject, $profile).then(result => {
-        if (result.id) {
-          editObject = {body: ''}
-          editing = !editing
-          toastMessage('Success! Your edit will be visible after being mined.', 'is-success')
-        }
-      })
+        editObject.updatedContent = post.id
+        api.createUpdate(editObject, $profile).then(result => {
+            if (result.id) {
+                editObject = { body: '' }
+                editing = !editing
+                toastMessage('Success! Your edit will be visible after being mined.', 'is-success')
+            }
+        })
     }
 
     const onScoreUpClicked = () => {
-        api.createScore({type: 'up', postID: post.id}, $profile).then(result => {
+        api.createScore({ type: 'up', postID: post.id }, $profile).then(result => {
             if (result.id) {
                 toastMessage('Success! Your scoring will be visible after being mined.', 'is-success')
             }
@@ -92,7 +91,7 @@
     }
 
     const onScoreDownClicked = () => {
-        api.createScore({type: 'down', postID: post.id}, $profile).then(result => {
+        api.createScore({ type: 'down', postID: post.id }, $profile).then(result => {
             if (result.id) {
                 toastMessage('Success! Your scoring will be visible after being mined.', 'is-success')
             }
@@ -137,7 +136,6 @@
         font-size: 0.75em;
     }
 
-
     :global(.column-upvotes) {
         transform: translateY(-12px);
     }
@@ -151,13 +149,19 @@
                 <div class="media-left">
                     <div class="columns upvote-container">
                         <div class="column column-upvotes">
-                            <a class="button is-small is-white tooltip is-tooltip-left" data-tooltip="Upvote (0.1 AR)" on:click={onScoreUpClicked}>
+                            <a
+                                class="button is-small is-white tooltip is-tooltip-left"
+                                data-tooltip="Upvote (0.1 AR)"
+                                on:click={onScoreUpClicked}>
                                 <span class="icon is-small">
                                     <i class="fas fa-angle-up" />
                                 </span>
                             </a>
                             <p>0</p>
-                            <a class="button is-small is-white tooltip is-tooltip-left" data-tooltip="Downvote (0.1 AR)" on:click={onScoreDownClicked}>
+                            <a
+                                class="button is-small is-white tooltip is-tooltip-left"
+                                data-tooltip="Downvote (0.1 AR)"
+                                on:click={onScoreDownClicked}>
                                 <span class="icon is-small">
                                     <i class="fas fa-angle-down" />
                                 </span>
@@ -185,7 +189,9 @@
 
                     {#if editing}
                         <textarea bind:value={editObject.body} class="textarea is-link" placeholder="Text to edit!" />
-                        <a class="mt-1 button is-pulled-right is-link" on:click={onCompleteEditClicked}>Complete edit</a>
+                        <a class="mt-1 button is-pulled-right is-link" on:click={onCompleteEditClicked}>
+                            Complete edit
+                        </a>
                     {:else}
                         <div class="post-content">
                             <p class="mb-1">
@@ -196,8 +202,8 @@
 
                 </div>
 
-                    <div class="media-right">
-                {#if $profile.wallet && $profile.address === post.owner}
+                <div class="media-right">
+                    {#if $profile.wallet && $profile.address === post.owner}
                         <a
                             class="button tooltip"
                             data-tooltip="Toggle post editing"
@@ -208,20 +214,20 @@
                                 <i class="fas fa-edit" />
                             </span>
                         </a>
-                {/if}
-                        {#if updates.length !== 0}
-                                <a
-                                    class="button tooltip"
-                                    data-tooltip="View update history"
-                                    on:click={() => {
-                        historyMode = !historyMode
-                                        }}>
+                    {/if}
+                    {#if updates.length !== 0}
+                        <a
+                            class="button tooltip"
+                            data-tooltip="View update history"
+                            on:click={() => {
+                                historyMode = !historyMode
+                            }}>
                             <span class="icon is-small">
                                 <i class="fas fa-history" />
                             </span>
-                            </a>
-                        {/if}
-                    </div>
+                        </a>
+                    {/if}
+                </div>
 
             </div>
         </div>

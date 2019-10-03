@@ -6,9 +6,12 @@ import {
     EXPERSE_POST_UNIVERSE_TAG,
     EXPERSE_PROFILE_TAG,
     EXPERSE_UNIVERSE_NAME_TAG,
-    EXPERSE_UNIVERSE_TAG, EXPERSE_UPDATE_ID_TAG, EXPERSE_UPDATE_TAG,
+    EXPERSE_UNIVERSE_TAG,
+    EXPERSE_UPDATE_ID_TAG,
+    EXPERSE_UPDATE_TAG,
     EXPERSE_USERNAME_TAG,
-    EXPERSE_SCORE_TAG, EXPERSE_SCORE_POST_TAG
+    EXPERSE_SCORE_TAG,
+    EXPERSE_SCORE_POST_TAG,
 } from './constants'
 import * as _ from 'lodash'
 
@@ -234,14 +237,14 @@ export class api {
 
     static updatesById(id, processResult) {
         return api
-          .allOfQuery({
-              op: 'equals',
-              expr1: EXPERSE_UPDATE_ID_TAG,
-              expr2: id,
-          })
-          .then(queryResult => {
-              processResult(queryResult)
-          })
+            .allOfQuery({
+                op: 'equals',
+                expr1: EXPERSE_UPDATE_ID_TAG,
+                expr2: id,
+            })
+            .then(queryResult => {
+                processResult(queryResult)
+            })
     }
 
     static signupUser(profile) {

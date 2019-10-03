@@ -36,7 +36,7 @@
         '/p/:id': Post,
         '/posts/create/:id': CreatePost,
         '/profile/:id': Profile,
-        '/search': Search
+        '/search': Search,
     }
 
     function toggleBurger() {

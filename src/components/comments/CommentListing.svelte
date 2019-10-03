@@ -12,7 +12,9 @@
                 results.forEach(async c => {
                     const commentDetails = JSON.parse(c.get('data', { decode: true, string: true }))
                     const owner = await arweave.wallets.ownerToAddress(c.owner)
-                    comments.update(comments => _.orderBy([...comments, { ...commentDetails, owner: owner, id: c.id }], ['date']))
+                    comments.update(comments =>
+                        _.orderBy([...comments, { ...commentDetails, owner: owner, id: c.id }], ['date'])
+                    )
                 })
             })
         }
@@ -21,5 +23,5 @@
 
 <!--a listing of comments on a post-->
 {#each $comments as comment}
-    <CommentListItem comment={comment} />
+    <CommentListItem {comment} />
 {/each}

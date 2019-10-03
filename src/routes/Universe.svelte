@@ -24,8 +24,9 @@
                 results.forEach(async p => {
                     const postDetails = JSON.parse(p.get('data', { decode: true, string: true }))
                     const owner = await arweave.wallets.ownerToAddress(p.owner)
-                    posts.update(current =>  _.orderBy([...current, { ...postDetails, id: p.id, owner: owner }], ['date']))
-
+                    posts.update(current =>
+                        _.orderBy([...current, { ...postDetails, id: p.id, owner: owner }], ['date'])
+                    )
                 })
             })
         }
